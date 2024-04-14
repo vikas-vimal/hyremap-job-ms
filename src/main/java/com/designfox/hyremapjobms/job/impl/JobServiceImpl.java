@@ -5,6 +5,8 @@ import com.designfox.hyremapjobms.external.Company;
 import com.designfox.hyremapjobms.job.Job;
 import com.designfox.hyremapjobms.job.JobRepository;
 import com.designfox.hyremapjobms.job.JobService;
+import com.designfox.hyremapjobms.mapper.JobMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +19,9 @@ import static java.util.Arrays.stream;
 @Service
 public class JobServiceImpl implements JobService {
     JobRepository jobRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     public JobServiceImpl(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
@@ -33,9 +38,8 @@ public class JobServiceImpl implements JobService {
 
     private JobCompanyDTO mergeCompanyInJob(Job job){
         if(job==null) return null;
-        RestTemplate restTemplate = new RestTemplate();
-        Company company = restTemplate.getForObject("http://localhost:5051/company/v1/"+job.getCompanyId(), Company.class);
-        return new JobCompanyDTO(job, company);
+        Company company = restTemplate.getForObject("http://HYREMAP-COMPANY-MS:5051/company/v1/"+job.getCompanyId(), Company.class);
+        return JobMapper.mapCompanyToJob(job, company);
     }
 
     @Override
