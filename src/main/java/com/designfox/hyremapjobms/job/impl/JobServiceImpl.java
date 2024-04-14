@@ -6,12 +6,14 @@ import com.designfox.hyremapjobms.job.Job;
 import com.designfox.hyremapjobms.job.JobRepository;
 import com.designfox.hyremapjobms.job.JobService;
 import com.designfox.hyremapjobms.mapper.JobMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -29,10 +31,43 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<JobDTO> findAll() {
-        return this.jobRepository
-                .findAll()
-                .stream()
-                .map(this::mergeCompanyInJob)
+        List<Job> jobsList = this.jobRepository
+                .findAll();
+        return this.mergeCompaniesInJobs(jobsList);
+    }
+
+    private List<Company> fetchCompaniesByIds(List<Long> companyIds){
+        if(companyIds.isEmpty()) return List.of();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("companyIds", companyIds);
+
+        ResponseEntity<List<Company>> response = restTemplate.exchange("http://HYREMAP-COMPANY-MS:5051/company/v1/get-bulk",
+                HttpMethod.POST,
+                new HttpEntity<String>(jsonObject.toString(), headers),
+                new ParameterizedTypeReference<List<Company>>() {
+        });
+        return response.getBody();
+    }
+
+    private List<JobDTO> mergeCompaniesInJobs(List<Job> jobsList){
+        if(jobsList.isEmpty()) return List.of();
+        Map<Long, Company> companiesMap = new HashMap<>();
+        List<Long> companyIds = new ArrayList<>();
+        jobsList.forEach(job->companyIds.add(job.getCompanyId()));
+
+        List<Company> companies = this.fetchCompaniesByIds(companyIds);
+        companies.forEach(com -> companiesMap.put(com.getId(), com));
+
+        return jobsList.stream()
+                .map(job->JobMapper.mapCompanyToJob(
+                        job,
+                        companiesMap.get(job.getCompanyId())
+                        )
+                )
                 .collect(Collectors.toList());
     }
 
