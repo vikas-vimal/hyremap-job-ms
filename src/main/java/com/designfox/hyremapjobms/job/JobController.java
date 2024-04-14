@@ -1,6 +1,6 @@
 package com.designfox.hyremapjobms.job;
 
-import com.designfox.hyremapjobms.dto.JobCompanyDTO;
+import com.designfox.hyremapjobms.dto.JobDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +17,13 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<List<JobCompanyDTO>> findAll(){
+    public ResponseEntity<List<JobDTO>> findAll(){
         return ResponseEntity.ok(jobService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<JobCompanyDTO> findOneById(@PathVariable Long id){
-        JobCompanyDTO foundJob = jobService.findById(id);
+    public ResponseEntity<JobDTO> findOneById(@PathVariable Long id){
+        JobDTO foundJob = jobService.findById(id);
         if(foundJob != null){
             return new ResponseEntity<>(foundJob, HttpStatus.OK);
         }

@@ -1,6 +1,6 @@
 package com.designfox.hyremapjobms.job.impl;
 
-import com.designfox.hyremapjobms.dto.JobCompanyDTO;
+import com.designfox.hyremapjobms.dto.JobDTO;
 import com.designfox.hyremapjobms.external.Company;
 import com.designfox.hyremapjobms.job.Job;
 import com.designfox.hyremapjobms.job.JobRepository;
@@ -28,7 +28,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public List<JobCompanyDTO> findAll() {
+    public List<JobDTO> findAll() {
         return this.jobRepository
                 .findAll()
                 .stream()
@@ -36,7 +36,7 @@ public class JobServiceImpl implements JobService {
                 .collect(Collectors.toList());
     }
 
-    private JobCompanyDTO mergeCompanyInJob(Job job){
+    private JobDTO mergeCompanyInJob(Job job){
         if(job==null) return null;
         Company company = restTemplate.getForObject("http://HYREMAP-COMPANY-MS:5051/company/v1/"+job.getCompanyId(), Company.class);
         return JobMapper.mapCompanyToJob(job, company);
@@ -55,7 +55,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public JobCompanyDTO findById(Long id) {
+    public JobDTO findById(Long id) {
         Job foundJob = jobRepository.findById(id).orElse(null);
         return this.mergeCompanyInJob(foundJob);
     }

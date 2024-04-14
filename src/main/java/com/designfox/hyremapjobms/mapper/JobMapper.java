@@ -1,20 +1,20 @@
 package com.designfox.hyremapjobms.mapper;
 
-import com.designfox.hyremapjobms.dto.JobCompanyDTO;
+import com.designfox.hyremapjobms.dto.JobDTO;
 import com.designfox.hyremapjobms.external.Company;
 import com.designfox.hyremapjobms.job.Job;
 
 public class JobMapper {
-    public static JobCompanyDTO mapCompanyToJob(Job job, Company company){
-        JobCompanyDTO jobCompanyDTO = new JobCompanyDTO();
-        jobCompanyDTO.setId(job.getId());
-        jobCompanyDTO.setTitle(job.getTitle());
-        jobCompanyDTO.setDescription(job.getDescription());
-        jobCompanyDTO.setMinSalary(job.getMinSalary());
-        jobCompanyDTO.setMaxSalary(job.getMaxSalary());
-        jobCompanyDTO.setLocation(job.getLocation());
-        jobCompanyDTO.setCompanyId(job.getCompanyId());
-        jobCompanyDTO.setCompany(company);
-        return  jobCompanyDTO;
+    public static JobDTO mapCompanyToJob(Job job, Company company){
+        JobDTO jobDTO = new JobDTO();
+        jobDTO.setId(job.getId());
+        jobDTO.setTitle(job.getTitle());
+        jobDTO.setDescription(job.getDescription());
+        jobDTO.setMinSalary(job.getMinSalary());
+        jobDTO.setMaxSalary(job.getMaxSalary());
+        jobDTO.setLocation(job.getLocation());
+        jobDTO.setCompanyId(job.getCompanyId());
+        jobDTO.setCompany(company);
+        return jobDTO;
     }
 }

@@ -1,13 +1,13 @@
 package com.designfox.hyremapjobms.job;
 
-import com.designfox.hyremapjobms.dto.JobCompanyDTO;
+import com.designfox.hyremapjobms.dto.JobDTO;
 
 import java.util.List;
 
 public interface JobService {
-    List<JobCompanyDTO> findAll();
+    List<JobDTO> findAll();
     Job createJob(Job job);
-    JobCompanyDTO findById(Long id);
+    JobDTO findById(Long id);
     boolean deleteJobById(Long id);
     Job updateJobById(Long id, Job body);
 }
